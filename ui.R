@@ -49,7 +49,15 @@ shinyUI(fluidPage(
             selected = NA,
             multiple = FALSE
 
-          ))),
+          )),
+          
+          conditionalPanel(
+            condition = "input.params != 'Intercept'",
+          checkboxInput("sort", "Sort", FALSE)         
+          )
+          
+          
+          ),
           # 
           # selectInput(
           #   "proj",

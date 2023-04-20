@@ -11,9 +11,15 @@ library(shiny)
 library(readr)
 library(ggplot2)
 
-plot_summary <- function(draw_summary){
+plot_summary <- function(draw_summary,sort){
   
   draw_summary$level <- factor(draw_summary$level, levels=c("0.66 Level","0.95 Level"),ordered = T)
+  if (sort==T){
+    
+    order_to_sort <- order(draw_summary$Estimate[draw_summary$level=="0.66 Level"])
+    levels_of_sort <- draw_summary$key[order_to_sort]
+    draw_summary$key <- factor(draw_summary$key,levels=levels_of_sort, ordered=T)
+  }
   
   plot <- ggplot(draw_summary, aes(y = key,x=Estimate,shape="Estimate"))+
     geom_point(show.legend = T,size=3)+
@@ -37,22 +43,22 @@ shinyServer(function(input, output) {
   model_summary <- readr::read_csv("./data/full_model_summary.csv")
   
   
-    output$distPlot <- renderPlot({
-      
-      subset <- model_summary$type==input$params
-      print(input$params)
-      print(input$vars)
-      
-      
-        if (input$params == 'Project Random Effects'){
-        subset <- model_summary$type==input$params & model_summary$variable==input$vars
-        }
-
-      
-      
-      plot_summary(model_summary[subset,])
-
-
-    },height = 700, width = 800)
-
+  output$distPlot <- renderPlot({
+    
+    subset <- model_summary$type==input$params
+    print(input$params)
+    print(input$vars)
+    
+    
+    if (input$params == 'Project Random Effects'){
+      subset <- model_summary$type==input$params & model_summary$variable==input$vars
+    }
+    
+    
+    
+    plot_summary(model_summary[subset,],input$sort)
+    
+    
+  },height = 700, width = 800)
+  
 })

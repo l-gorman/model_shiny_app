@@ -13,6 +13,8 @@ model_summary <- readr::read_csv("./data/full_model_summary.csv")
 
 
 types <- unique(model_summary$type)
+vars <- unique(model_summary$variable)
+vars <- vars[!is.na(vars)]
 
 
 # Define UI for application that draws a histogram
@@ -37,40 +39,41 @@ shinyUI(fluidPage(
             size = NULL
           ),
           
+          
+          conditionalPanel(
+            condition = "input.params == 'Project Random Effects'",
           selectInput(
             "vars",
             "Variables:",
-            types,
-            selected = NULL,
-            multiple = FALSE,
-            selectize = TRUE,
-            width = NULL,
-            size = NULL
-          ),
-          
-          selectInput(
-            "proj",
-            "Project:",
-            types,
-            selected = NULL,
-            multiple = FALSE,
-            selectize = TRUE,
-            width = NULL,
-            size = NULL
-          ),
-          
-          conditionalPanel(
-            condition = "input.params == 'Country Effect'",
-          selectInput(
-            "country",
-            "Country:",
-            types,
-            selected = NULL,
-            multiple = FALSE,
-            selectize = TRUE,
-            width = NULL,
-            size = NULL
+            vars,
+            selected = NA,
+            multiple = FALSE
+
           ))),
+          # 
+          # selectInput(
+          #   "proj",
+          #   "Project:",
+          #   types,
+          #   selected = NULL,
+          #   multiple = FALSE,
+          #   selectize = TRUE,
+          #   width = NULL,
+          #   size = NULL
+          # ),
+          # 
+          # conditionalPanel(
+          #   condition = "input.params == 'Country Effect'",
+          # selectInput(
+          #   "country",
+          #   "Country:",
+          #   types,
+          #   selected = NULL,
+          #   multiple = FALSE,
+          #   selectize = TRUE,
+          #   width = NULL,
+          #   size = NULL
+          # ))),
           
 
 

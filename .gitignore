@@ -1,2 +1,5 @@
 .Rproj.user/
 hierarchical_model_exploration.Rproj
+rsconnect/
+shinyApp.R
+.Rhistory

@@ -11,17 +11,6 @@ library(shiny)
 library(readr)
 library(ggplot2)
 
-generate_plot <- function(x,
-                          bins){
-  x    <- faithful[, 2]
-  bins <- seq(min(x), max(x), length.out = bins + 1)
-  
-  # draw the histogram with the specified number of bins
-  return(hist(x, breaks = bins, col = 'darkgray', border = 'white'))
-  
-}
-
-
 plot_summary <- function(draw_summary){
   
   draw_summary$level <- factor(draw_summary$level, levels=c("0.66 Level","0.95 Level"),ordered = T)
@@ -49,21 +38,21 @@ shinyServer(function(input, output) {
   
   
     output$distPlot <- renderPlot({
+      
+      subset <- model_summary$type==input$params
+      print(input$params)
+      print(input$vars)
+      
+      
+        if (input$params == 'Project Random Effects'){
+        subset <- model_summary$type==input$params & model_summary$variable==input$vars
+        }
 
-        # generate bins based on input$bins from ui.R
       
-      # generate_plot(x,input$bins)
       
-      plot_summary(model_summary[model_summary$type=="Sources of Variance",])
-      
-      # print(model_summary)
-      
-        # x    <- faithful[, 2]
-        # bins <- seq(min(x), max(x), length.out = input$bins + 1)
-        # 
-        # # draw the histogram with the specified number of bins
-        # hist(x, breaks = bins, col = 'darkgray', border = 'white')
+      plot_summary(model_summary[subset,])
 
-    },height = 800, width = 900)
+
+    },height = 700, width = 800)
 
 })

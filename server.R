@@ -11,7 +11,7 @@ library(shiny)
 library(readr)
 library(ggplot2)
 
-plot_summary <- function(draw_summary,sort){
+plot_summary <- function(draw_summary,sort, rangeselect, range){
   
   draw_summary$level <- factor(draw_summary$level, levels=c("0.66 Level","0.95 Level"),ordered = T)
   if (sort==T){
@@ -20,6 +20,9 @@ plot_summary <- function(draw_summary,sort){
     levels_of_sort <- draw_summary$key[order_to_sort]
     draw_summary$key <- factor(draw_summary$key,levels=levels_of_sort, ordered=T)
   }
+  
+
+  
   
   plot <- ggplot(draw_summary, aes(y = key,x=Estimate,shape="Estimate"))+
     geom_point(show.legend = T,size=3)+
@@ -31,7 +34,17 @@ plot_summary <- function(draw_summary,sort){
                                     byrow = TRUE, 
                                     override.aes = list(shape = c(NA), linetype = c("solid", "solid"))),
            shape=guide_legend(title="")) +
-    theme(plot.title = element_text(hjust=0.5))
+    theme(plot.title = element_text(hjust=0.5)) +
+    geom_vline(xintercept = 0,linetype = "dashed", color="dodgerblue4",size=1.5)
+  
+  
+  if (rangeselect==T){
+    xmin <- range[1]
+    xmax <- range[2]
+    
+    plot <- plot+xlim(c(xmin,xmax))
+    
+  }
   
   return(plot)
   
@@ -54,9 +67,9 @@ shinyServer(function(input, output) {
       subset <- model_summary$type==input$params & model_summary$variable==input$vars
     }
     
+ 
     
-    
-    plot_summary(model_summary[subset,],input$sort)
+    plot_summary(model_summary[subset,],input$sort, input$rangeselect, input$x_range)
     
     
   },height = 700, width = 800)

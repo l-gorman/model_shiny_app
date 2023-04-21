@@ -19,75 +19,85 @@ vars <- vars[!is.na(vars)]
 
 # Define UI for application that draws a histogram
 shinyUI(fluidPage(
-
-    # Application title
-    titlePanel("Bayesian Hierarchical Meta-Analysis of Individual Farm Data"),
-
-    # Sidebar with a slider input for number of bins
-    sidebarLayout(
-        sidebarPanel(
+  
+  # Application title
+  titlePanel("Bayesian Hierarchical Meta-Analysis of Individual Farm Data"),
+  
+  # Sidebar with a slider input for number of bins
+  sidebarLayout(
+    sidebarPanel(
+      
+      
+      selectInput(
+        "params",
+        "Parameter Type:",
+        types,
+        selected = NULL,
+        multiple = FALSE,
+        selectize = TRUE,
+        width = NULL,
+        size = NULL
+      ),
+      
+      
+      conditionalPanel(
+        condition = "input.params == 'Project Random Effects'",
+        selectInput(
+          "vars",
+          "Variables:",
+          vars,
+          selected = NA,
+          multiple = FALSE
           
-          
-          selectInput(
-            "params",
-            "Parameter Type:",
-            types,
-            selected = NULL,
-            multiple = FALSE,
-            selectize = TRUE,
-            width = NULL,
-            size = NULL
-          ),
-          
-          
-          conditionalPanel(
-            condition = "input.params == 'Project Random Effects'",
-          selectInput(
-            "vars",
-            "Variables:",
-            vars,
-            selected = NA,
-            multiple = FALSE
-
-          )),
-          
-          conditionalPanel(
-            condition = "input.params != 'Intercept'",
-          checkboxInput("sort", "Sort", FALSE)         
-          )
-          
-          
-          ),
-          # 
-          # selectInput(
-          #   "proj",
-          #   "Project:",
-          #   types,
-          #   selected = NULL,
-          #   multiple = FALSE,
-          #   selectize = TRUE,
-          #   width = NULL,
-          #   size = NULL
-          # ),
-          # 
-          # conditionalPanel(
-          #   condition = "input.params == 'Country Effect'",
-          # selectInput(
-          #   "country",
-          #   "Country:",
-          #   types,
-          #   selected = NULL,
-          #   multiple = FALSE,
-          #   selectize = TRUE,
-          #   width = NULL,
-          #   size = NULL
-          # ))),
-          
-
-
-        # Show a plot of the generated distribution
-        mainPanel(
-            plotOutput("distPlot")
-        )
+        )),
+      
+      
+      
+      conditionalPanel(
+        condition = "input.params != 'Intercept'",
+        checkboxInput("sort", "Sort", FALSE)         
+      ),
+      
+      checkboxInput("rangeselect", "Select Xlim Range", FALSE),         
+      
+      
+      conditionalPanel(
+        condition = "input.rangeselect == true",
+        sliderInput("x_range", "Range:",
+                    min = -2, max = 2, value = c(-1, 1), step = 0.01))),
+        
+    
+      # 
+      # selectInput(
+      #   "proj",
+      #   "Project:",
+      #   types,
+      #   selected = NULL,
+      #   multiple = FALSE,
+      #   selectize = TRUE,
+      #   width = NULL,
+      #   size = NULL
+      # ),
+      # 
+      # conditionalPanel(
+      #   condition = "input.params == 'Country Effect'",
+      # selectInput(
+      #   "country",
+      #   "Country:",
+      #   types,
+      #   selected = NULL,
+      #   multiple = FALSE,
+      #   selectize = TRUE,
+      #   width = NULL,
+      #   size = NULL
+      # ))),
+      
+      
+      
+      # Show a plot of the generated distribution
+      mainPanel(
+        plotOutput("distPlot")
+      )
     )
-))
+  ))
+  
